@@ -16,12 +16,33 @@
   * destroy() // prototype method that returns: `${this.name} was removed from the game.`
 */
 
+function GameObject(param) {
+  this.createdAt = param.createdAt;
+  this.name = param.name;
+  this.dimensions = param.dimensions;
+};
+
+GameObject.prototype.destroy = function (){
+  return `${this.name} was removed from the game.`;
+};
+
 /*
   === CharacterStats ===
   * healthPoints
   * takeDamage() // prototype method -> returns the string '<object name> took damage.'
   * should inherit destroy() from GameObject's prototype
 */
+
+function CharacterStats(param) {
+  this.healthPoints = param.healthPoints;
+  GameObject.call(this, param)
+};
+
+CharacterStats.prototype = Object.create(GameObject.prototype);
+
+CharacterStats.prototype.takeDamage = function() {
+  return `${this.name} took damage.`;
+};
 
 /*
   === Humanoid (Having an appearance or character resembling that of a human.) ===
@@ -32,7 +53,42 @@
   * should inherit destroy() from GameObject through CharacterStats
   * should inherit takeDamage() from CharacterStats
 */
- 
+
+function Humanoid(param) {
+  this.team = param.team;
+  this.weapons = param.weapons;
+  this.language = param.language;
+  CharacterStats.call(this, param)
+};
+
+// Humanoid.prototype = Object.create(GameObject.prototype);
+Humanoid.prototype = Object.create(CharacterStats.prototype);
+
+Humanoid.prototype.greet = function() {
+  return `${this.name} offers a greeting in ${this.language}.`;
+};
+
+Humanoid.prototype.block = function(damage) {
+  if ((this.healthPoints - damage) >= 1) {
+    console.log( `${this.takeDamage()} and has ${this.healthPoints - damage} HP left.`);
+    return this.healthPoints - damage;
+  }
+  else {
+    console.log(`${this.name} has no health left. ${this.destroy()}`);
+    return 0;
+  }
+};
+
+Humanoid.prototype.attack = function(who) {
+  if (who.block(2) >= 1) {
+    return `${this.name} has attacked ${who.name} dealing 2 HP.`;
+    }
+    else {
+      return `${this.name} has destroyed the enemy ${who.name}.`;
+    }
+  
+}
+
 /*
   * Inheritance chain: GameObject -> CharacterStats -> Humanoid
   * Instances of Humanoid should have all of the same properties as CharacterStats and GameObject.
@@ -41,7 +97,7 @@
 
 // Test you work by un-commenting these 3 objects and the list of console logs below:
 
-/*
+
   const mage = new Humanoid({
     createdAt: new Date(),
     dimensions: {
@@ -91,6 +147,7 @@
     ],
     language: 'Elvish',
   });
+/*
 
   console.log(mage.createdAt); // Today's date
   console.log(archer.dimensions); // { length: 1, width: 2, height: 4 }
@@ -108,3 +165,93 @@
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
   // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
+
+  console.log(archer.attack(swordsman));
+  console.log(swordsman.block(7));
+
+  function Hero(param){
+    this.specialSkill = param.specialSkill;
+    this.specialBuff = param.specialBuff;
+    this.specialArmor = param.specialArmor;
+    Humanoid.call(this, param);
+
+  };
+
+  Hero.prototype = Object.create(Humanoid.prototype);
+
+  Hero.prototype.Strike = function(who) {
+    if (who.block(9) > 0) {
+    return `${this.name} has summoned the power of the gods to perform the ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} dealing 9 HP to ${who.name}.`;
+    }
+    else if (who.block(9) <= 0){
+      return `${this.name} has summoned the power of the gods to perform the ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} destroying the enemy ${who.name}.`;
+    }
+  };
+
+
+  function Villain(param){
+    this.specialSkill = param.specialSkill;
+    this.specialBuff = param.specialBuff;
+    this.specialArmor = param.specialArmor;
+    Humanoid.call(this, param);
+
+  };
+
+  Villain.prototype = Object.create(Humanoid.prototype);
+
+  Villain.prototype.Cataclysm = function(who) {
+    if (who.block(9) > 0) {
+    return `${this.name} has summoned the demonic power ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} dealing 9 HP ${who.name}.`;
+    }
+    else {
+      return `${this.name} has summoned the demonic power ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} destroying the enemy ${who.name}.`;
+    }
+  };
+
+
+  const Eugio = new Hero({
+    createdAt: new Date(),
+    dimensions: {
+      length: 1,
+      width: 2,
+      height: 6,
+    },
+    healthPoints: 30,
+    name: 'Eugio',
+    team: 'Templar Kingdom',
+    weapons: [
+      'Long Sword',
+      'Dagger',
+      'Shield',
+      'Bow'
+    ],
+    language: 'Ye Ole English',
+    specialSkill: 'Holy Spatial Slash',
+    specialBuff: 'Divine Blessing',
+    specialArmor: 'Godly Container'
+  });
+
+
+  const Aiji = new Villain({
+    createdAt: new Date(),
+    dimensions: {
+      length: 1,
+      width: 2,
+      height: 6,
+    },
+    healthPoints: 30,
+    name: 'Aiji',
+    team: 'Cataclysmic Empire',
+    weapons: [
+      'Claws',
+      'Throwing Dagger',
+    ],
+    language: 'All',
+    specialSkill: 'Sinister Destructive Pulse',
+    specialBuff: 'Divine Blessing',
+    specialArmor: 'Demonic Boots'
+  });
+
+console.log(Eugio.Strike(Aiji));
+console.log(Aiji.greet());
+console.log(Aiji.Cataclysm(mage));
