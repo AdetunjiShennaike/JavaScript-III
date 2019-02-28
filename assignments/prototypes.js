@@ -68,6 +68,25 @@ Humanoid.prototype.greet = function() {
   return `${this.name} offers a greeting in ${this.language}.`;
 };
 
+Humanoid.prototype.block = function(damage) {
+  if (this.healthPoints > 2) {
+    return `${this.tookDamage} and has ${this.healthPoints - damage} HP left.`;
+  }
+  else {
+    return this.destroy();
+  }
+};
+
+Humanoid.prototype.attack = function(who) {
+  if (who.block(2) > 0) {
+    return `${this.name} has attacked ${who} dealing 2 HP.`;
+    }
+    else {
+      return `${this.name} has destroyed the enemy ${who}.`;
+    }
+  
+}
+
 /*
   * Inheritance chain: GameObject -> CharacterStats -> Humanoid
   * Instances of Humanoid should have all of the same properties as CharacterStats and GameObject.
@@ -143,3 +162,91 @@ Humanoid.prototype.greet = function() {
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
   // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
+
+  console.log(archer.attack(swordsman));
+
+  function Hero(param){
+    this.specialSkill = param.specialSkill;
+    this.specialBuff = param.specialBuff;
+    this.specialArmor = param.specialArmor;
+    Humanoid.call(this, param);
+
+  };
+
+  Hero.prototype = Object.call(Humanoid.prototype);
+
+  Hero.prototype.strike = function(who) {
+    if (who.block(9) > 9) {
+    return `${this.name} has summoned the power of the gods to perform the ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} dealing 9 HP.`;
+    }
+    else {
+      return `${this.name} has summoned the power of the gods to perform the ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} destroying the enemy ${who}.`;
+    }
+  };
+
+
+  function Villain(param){
+    this.specialSkill = param.specialSkill;
+    this.specialBuff = param.specialBuff;
+    this.specialArmor = param.specialArmor;
+    Humanoid.call(this, param);
+
+  };
+
+  Villain.prototype = Object.call(Humanoid.prototype);
+
+  Villain.prototype.Cataclysm = function(who) {
+    if (who.block(9) > 9) {
+    return `${this.name} has summoned the demonic power ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} dealing 9 HP.`;
+    }
+    else {
+      return `${this.name} has summoned the demonic power ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} destroying the enemy ${who}.`;
+    }
+  };
+
+
+  const Eugio = new Hero({
+    createdAt: new Date(),
+    dimensions: {
+      length: 1,
+      width: 2,
+      height: 6,
+    },
+    healthPoints: 30,
+    name: 'Eugio',
+    team: 'Templar Kingdom',
+    weapons: [
+      'Long Sword',
+      'Dagger',
+      'Shield',
+      'Bow'
+    ],
+    language: 'Ye Ole English',
+    specialSkill: 'Holy Spatial Slash',
+    specialBuff: 'Divine Blessing',
+    specialArmor: 'Godly Container'
+  });
+
+
+  const Aiji = new Villain({
+    createdAt: new Date(),
+    dimensions: {
+      length: 1,
+      width: 2,
+      height: 6,
+    },
+    healthPoints: 30,
+    name: 'Aiji',
+    team: 'Cataclysmic Empire',
+    weapons: [
+      'Claws',
+      'Throwing Dagger',
+    ],
+    language: 'All',
+    specialSkill: 'Sinister Destructive Pulse',
+    specialBuff: 'Divine Blessing',
+    specialArmor: 'Demonic Boots'
+  });
+
+console.log(Eugio);
+console.log(Aiji);
