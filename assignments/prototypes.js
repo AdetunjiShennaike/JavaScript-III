@@ -69,17 +69,18 @@ Humanoid.prototype.greet = function() {
 };
 
 Humanoid.prototype.block = function(damage) {
-  if (this.healthPoints > 0) {
+  if ((this.healthPoints - damage) >= 1) {
     console.log( `${this.takeDamage()} and has ${this.healthPoints - damage} HP left.`);
     return this.healthPoints - damage;
   }
   else {
-    return this.destroy();
+    console.log(`${this.name} has no health left. ${this.destroy()}`);
+    return 0;
   }
 };
 
 Humanoid.prototype.attack = function(who) {
-  if (who.block(2) > 0) {
+  if (who.block(2) >= 1) {
     return `${this.name} has attacked ${who.name} dealing 2 HP.`;
     }
     else {
@@ -146,6 +147,7 @@ Humanoid.prototype.attack = function(who) {
     ],
     language: 'Elvish',
   });
+/*
 
   console.log(mage.createdAt); // Today's date
   console.log(archer.dimensions); // { length: 1, width: 2, height: 4 }
@@ -157,7 +159,7 @@ Humanoid.prototype.attack = function(who) {
   console.log(archer.greet()); // Lilith offers a greeting in Elvish.
   console.log(mage.takeDamage()); // Bruce took damage.
   console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
-
+*/
 
   // Stretch task: 
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
@@ -165,7 +167,7 @@ Humanoid.prototype.attack = function(who) {
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
 
   console.log(archer.attack(swordsman));
-  console.log(swordsman.block(15));
+  console.log(swordsman.block(7));
 
   function Hero(param){
     this.specialSkill = param.specialSkill;
@@ -175,13 +177,13 @@ Humanoid.prototype.attack = function(who) {
 
   };
 
-  Hero.prototype = Object.call(Humanoid.prototype);
+  Hero.prototype = Object.create(Humanoid.prototype);
 
-  Hero.prototype.strike = function(who) {
-    if (who.block(9) > 9) {
+  Hero.prototype.Strike = function(who) {
+    if (who.block(9) > 0) {
     return `${this.name} has summoned the power of the gods to perform the ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} dealing 9 HP to ${who.name}.`;
     }
-    else {
+    else if (who.block(9) <= 0){
       return `${this.name} has summoned the power of the gods to perform the ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} destroying the enemy ${who.name}.`;
     }
   };
@@ -195,10 +197,10 @@ Humanoid.prototype.attack = function(who) {
 
   };
 
-  Villain.prototype = Object.call(Humanoid.prototype);
+  Villain.prototype = Object.create(Humanoid.prototype);
 
   Villain.prototype.Cataclysm = function(who) {
-    if (who.block(9) > 9) {
+    if (who.block(9) > 0) {
     return `${this.name} has summoned the demonic power ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} dealing 9 HP ${who.name}.`;
     }
     else {
@@ -250,5 +252,6 @@ Humanoid.prototype.attack = function(who) {
     specialArmor: 'Demonic Boots'
   });
 
-console.log(Eugio.strike(Aiji));
-console.log(Aiji);
+console.log(Eugio.Strike(Aiji));
+console.log(Aiji.greet());
+console.log(Aiji.Cataclysm(mage));
