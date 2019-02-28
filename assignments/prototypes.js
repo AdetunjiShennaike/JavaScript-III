@@ -69,8 +69,9 @@ Humanoid.prototype.greet = function() {
 };
 
 Humanoid.prototype.block = function(damage) {
-  if (this.healthPoints > 2) {
-    return `${this.tookDamage} and has ${this.healthPoints - damage} HP left.`;
+  if (this.healthPoints > 0) {
+    console.log( `${this.takeDamage()} and has ${this.healthPoints - damage} HP left.`);
+    return this.healthPoints - damage;
   }
   else {
     return this.destroy();
@@ -79,10 +80,10 @@ Humanoid.prototype.block = function(damage) {
 
 Humanoid.prototype.attack = function(who) {
   if (who.block(2) > 0) {
-    return `${this.name} has attacked ${who} dealing 2 HP.`;
+    return `${this.name} has attacked ${who.name} dealing 2 HP.`;
     }
     else {
-      return `${this.name} has destroyed the enemy ${who}.`;
+      return `${this.name} has destroyed the enemy ${who.name}.`;
     }
   
 }
@@ -164,6 +165,7 @@ Humanoid.prototype.attack = function(who) {
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
 
   console.log(archer.attack(swordsman));
+  console.log(swordsman.block(15));
 
   function Hero(param){
     this.specialSkill = param.specialSkill;
@@ -177,10 +179,10 @@ Humanoid.prototype.attack = function(who) {
 
   Hero.prototype.strike = function(who) {
     if (who.block(9) > 9) {
-    return `${this.name} has summoned the power of the gods to perform the ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} dealing 9 HP.`;
+    return `${this.name} has summoned the power of the gods to perform the ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} dealing 9 HP to ${who.name}.`;
     }
     else {
-      return `${this.name} has summoned the power of the gods to perform the ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} destroying the enemy ${who}.`;
+      return `${this.name} has summoned the power of the gods to perform the ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} destroying the enemy ${who.name}.`;
     }
   };
 
@@ -197,10 +199,10 @@ Humanoid.prototype.attack = function(who) {
 
   Villain.prototype.Cataclysm = function(who) {
     if (who.block(9) > 9) {
-    return `${this.name} has summoned the demonic power ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} dealing 9 HP.`;
+    return `${this.name} has summoned the demonic power ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} dealing 9 HP ${who.name}.`;
     }
     else {
-      return `${this.name} has summoned the demonic power ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} destroying the enemy ${who}.`;
+      return `${this.name} has summoned the demonic power ${this.specialSkill}, granting the buff ${this.specialBuff} and suit ${this.specialArmor} destroying the enemy ${who.name}.`;
     }
   };
 
@@ -248,5 +250,5 @@ Humanoid.prototype.attack = function(who) {
     specialArmor: 'Demonic Boots'
   });
 
-console.log(Eugio);
+console.log(Eugio.strike(Aiji));
 console.log(Aiji);
